@@ -25,7 +25,7 @@ const CartItems = async () => {
           id="detail+cart"
           className="flex flex-col justify-between items-center   w-full h-full gap-10 p-1"
         >
-          {data.map((data: any) => {
+          {data && data.map((data: any) => {
             return (
               <div
                 key={data.product_id}

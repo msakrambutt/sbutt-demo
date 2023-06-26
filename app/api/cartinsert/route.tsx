@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const req = await request.json();
   const id = uuid();
   const setCookies = cookies();
-  const user_id = cookies().get("user_id")?.value;
+  const user_id = cookies().get("user_id")?.value;//check cookie already created
   if (!user_id) {
     setCookies.set("user_id", id);
   }
