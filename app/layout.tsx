@@ -1,10 +1,8 @@
 import "./globals.css";
 import { Sora } from "next/font/google";
-import Navbar from "@/components/navbar/navbar";
-import Footer from "@/components/all-other/footer";
-import Underfooter from "@/components/all-other/underfooter";
-import CartProvider from "@/components/counter/QuantityContext";
 import type { Metadata } from "next";
+import Footer from "@/components/Footer";
+import NavBar from "@/components/NavBar";
 const sora = Sora({
   subsets: ["latin"],
 });
@@ -22,12 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={sora.className}>
         <div className="mx-12 my-10  xl:mx-32 xl:my-16">
-          <CartProvider>
-            <Navbar />
+            <NavBar/>
             {children}
-            <Footer />
-            <Underfooter />
-          </CartProvider>
+            <Footer/>
         </div>
       </body>
     </html>
