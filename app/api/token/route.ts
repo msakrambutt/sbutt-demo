@@ -1,8 +1,6 @@
-import { serialize } from "cookie";
 import { NextResponse,NextRequest } from "next/server";
 import { db, usertable} from "@/lib/drizzle";
 import jwt from "jsonwebtoken";
-    // const authToken1 = req.cookies.get('Set-Cookie')?.value ; // Assuming the cookie name is "authToken"
 
 
 let JWT_SECRET_KEY: string;

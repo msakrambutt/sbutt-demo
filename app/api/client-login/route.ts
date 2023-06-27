@@ -19,7 +19,7 @@ export const POST= async (req: Request) => {
         const user = await db.select().from(usertable)
         .where(eq(usertable.email,body.clientEmail));
         console.log(user);
-        if (user.length ==0) {
+        if (user.length ===0) {
           return new NextResponse(
             JSON.stringify({ message: "Email not found. Please register!", status: 400 }));
         }

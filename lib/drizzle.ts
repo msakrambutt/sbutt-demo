@@ -1,4 +1,4 @@
-import { date, integer, pgTable, serial, varchar,PgDate} from "drizzle-orm/pg-core";
+import { date, integer, pgTable, serial, varchar,timestamp} from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import { InferModel } from "drizzle-orm";
@@ -14,16 +14,18 @@ export const usertable = pgTable("users", {
     password: varchar("password", {
       length: 255,
     }).notNull(),
-    created_at: date("created_at",{mode:"date"}).notNull(),
+    created_at: timestamp("created_at").notNull(),
     role: varchar("role", {
         length: 30,
       }).notNull().default("'user'"),
   });
 
+ 
+
   export const playlistTable = pgTable("playlist", {
     id: serial("id").primaryKey(),
     user_id: integer("user_id").notNull().references(() => usertable.id),
-    order_date: date("order_date").notNull(),
+    order_date: timestamp("order_date").notNull(),
     course_id: varchar("course_id", {
       length: 255,
     }).notNull(),

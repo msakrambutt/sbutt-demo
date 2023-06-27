@@ -31,7 +31,6 @@ export const POST = async (req: Request) => {
         const salt: string = bcrypt.genSaltSync(10);
         let secPass: string = await bcrypt.hash(body.clientPwd, salt);
         console.log(secPass);
-        const expire=new Date();
         const query = await db
         .insert(usertable)
         .values({
