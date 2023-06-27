@@ -18,7 +18,7 @@ const HeroSection = () => {
       <p className="mb-8 leading-relaxed">Learn  Online IT Courses, with a little bit amount that make your future bright</p>
       <div className="flex justify-center">
         <Link href={"/auth/signup"}><button  className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">SignUp</button></Link>
-        <Link href={"/auth/signIn"} ><button className="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">SignIn</button></Link>
+        <Link href={"/auth/signin"} ><button className="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">SignIn</button></Link>
       </div>
     </div>
   </div>

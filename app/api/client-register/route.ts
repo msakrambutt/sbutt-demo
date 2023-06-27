@@ -1,18 +1,15 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 import { NextResponse,NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import { db, usertable } from "@/app/drizzle/schema";
-import { and, eq ,or} from "drizzle-orm";
+import { db, usertable} from "@/lib/drizzle";
+import { eq ,or} from "drizzle-orm";
 
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
 }
-const uid=uuidv4();
 
 export const POST = async (req: Request) => {
     console.log("Register user");
@@ -34,13 +31,14 @@ export const POST = async (req: Request) => {
         const salt: string = bcrypt.genSaltSync(10);
         let secPass: string = await bcrypt.hash(body.clientPwd, salt);
         console.log(secPass);
+        const expire=new Date();
         const query = await db
         .insert(usertable)
         .values({
-          id: uid,
           name: body.clientName,
           email:body.clientEmail,
-          password: secPass
+          password: secPass,
+          created_at:new Date(),
           })
         .returning(); 
         

@@ -1,9 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 import { NextResponse,NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import { db, usertable} from "@/app/drizzle/schema";
+import { db, usertable} from "@/lib/drizzle";
 import { eq} from "drizzle-orm";
 
 
@@ -11,7 +10,6 @@ let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
 }
-const uid=uuidv4();
 
 export const POST= async (req: Request) => {
   try {
@@ -23,7 +21,7 @@ export const POST= async (req: Request) => {
         console.log(user);
         if (user.length ==0) {
           return new NextResponse(
-            JSON.stringify({ message: "Sorry you are not the user of our platform. Please register!", status: 400 }));
+            JSON.stringify({ message: "Email not found. Please register!", status: 400 }));
         }
 
         //check password throught encryption
