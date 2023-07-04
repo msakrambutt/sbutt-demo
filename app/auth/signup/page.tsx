@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SignIn = () => {
+const SignUp = () => {
   return (
     <section className="text-gray-600 body-font relative">
   <div className="container px-5 py-24 mx-auto">
@@ -67,4 +67,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default SignUp

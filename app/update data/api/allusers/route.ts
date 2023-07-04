@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { db, userTable, playlistTable, watchTimeTable } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
+import { AES, enc } from 'crypto-js';
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -11,33 +12,21 @@ export const GET = async (req: NextRequest) => {
   try {
     if (process.env.SECRET_KEY) {
       const results = await db
-      .select({
-        users: {
-          id: userTable.id,
-          name: userTable.name,
-          email: userTable.email,
-          created_at: userTable.created_at,
-          role: userTable.role,
-        },
-        playlist: {
-          id:playlistTable.id,
-          userId:playlistTable.user_id,
-          orderDate:playlistTable.order_date,
-          courseId:playlistTable.course_id
-        },
-        watch_time: {
-          id:watchTimeTable.id,
-          playListID:watchTimeTable.playlist_id,
-          watchVideoNo:watchTimeTable.watch_video_no,
-          watchVideoID:watchTimeTable.watch_video_id
-        },
-      })
+        .select()
         .from(userTable)
         .fullJoin(playlistTable, eq(playlistTable.user_id, userTable.id))
         .fullJoin(watchTimeTable,eq(watchTimeTable.playlist_id, playlistTable.id));
        
+      // Decrypt the password for each user
+      results.forEach((result) => {
+        if (result.users && result.users.password) {
+          const decryptedBytes = AES.decrypt(result.users.password, JWT_SECRET_KEY);
+          const decryptedPassword = decryptedBytes.toString(enc.Utf8);
+          result.users.password = decryptedPassword;
+        }
+      });
       if (results.length === 0) {
-        return NextResponse.json({ message: "UserData not found", status: 400 });
+        return NextResponse.json({ message: "Data not found", status: 400 });
       }
       return NextResponse.json({ data: results });
     }

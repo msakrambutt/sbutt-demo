@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
-import { NextResponse,NextRequest } from "next/server";
-import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 import { serialize } from "cookie";
-import { db, usertable} from "@/lib/drizzle";
-import { eq} from "drizzle-orm";
+import { db, userTable } from "@/lib/drizzle";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
 
 let JWT_SECRET_KEY: string;
@@ -11,65 +12,47 @@ if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
 }
 
-export const POST= async (req: Request) => {
+export const POST = async (req: Request) => {
   try {
     if (process.env.SECRET_KEY) {
       const body = await req.json();
       if (body.clientEmail && body.clientPwd) {
-        const user = await db.select().from(usertable)
-        .where(eq(usertable.email,body.clientEmail));
-        console.log(user);
-        if (user.length ===0) {
-          return new NextResponse(
-            JSON.stringify({ message: "Email not found. Please register!", status: 400 }));
+        const user = await db
+          .select()
+          .from(userTable)
+          .where(eq(userTable.email, body.clientEmail));
+        if (user.length === 0) {
+          return NextResponse.json({
+              message: "Email not found. Please register!",
+              status: 400,
+            });
         }
 
-        //check password throught encryption
+        // compare encrypted password
         if (typeof body.clientPwd === "string") {
           const passwordCompare: boolean = await bcrypt.compare(
             body.clientPwd,
             user[0].password
           );
-
           if (!passwordCompare) {
-            return new NextResponse(
-              JSON.stringify({ message: "Incorrect password", status: 400 })
-            );
+            return NextResponse.json({ status: 400,message:"Password is incorrect."});
           }
-        const data = {
-          user: {
-            id:user[0].id,
-          },
-        };
-        const authToken = jwt.sign(data, process.env.SECRET_KEY);//sign digital signature on token
-        //serialized token and store as a cookie value
-        const serialized: string | undefined = serialize("authToken", authToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== "development",
-          sameSite: "strict",
-          path: "/",
-        });
-       
-        const response = new NextResponse(null, {
-          headers: {
-            'Set-Cookie': serialized,
-          },
-        });
-
-        return new NextResponse(JSON.stringify({ authToken: authToken}));
+          const data = {
+            user: {
+              id: user[0].id,
+            },
+          };
+          const authToken = jwt.sign(data, process.env.SECRET_KEY); 
+          cookies().set("authToken", authToken);
+         
+          return NextResponse.json({ message:"User Credential found, Allow user to access the content"});
+        }
+      } else {
+        return NextResponse.json({ message: "clientEmail or clientPassword is missing." });
       }
-
-    } else {
-      return new NextResponse(
-        JSON.stringify({ message: "clientName or clientEmail is missing." }));
     }
-  }
-  }catch (error) {
-    console.log("🚀 ~ file: route.ts:16 ~ POST ~ error:", error);
-    return new NextResponse(
-      JSON.stringify({ status: 500, message: "Internal Server Error." }));
+  } catch (error) {
+    console.log("POST request error:", error);
+    return NextResponse.json({ status: 500, message: "Internal Server Error." });
   }
 };
-
-
- 

@@ -3,8 +3,7 @@ import { NextResponse } from "next/server";
 import { serialize } from "cookie";
 import { db, userTable} from "@/lib/drizzle";
 import { eq, or} from "drizzle-orm";
-import bcrypt from "bcryptjs";
-import { cookies } from "next/headers";
+import { AES, enc } from 'crypto-js';
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -13,7 +12,6 @@ if (typeof process.env.SECRET_KEY === "string") {
 
 export const POST = async (req: Request) => {
   try {
-    const setCookies=cookies();
     if (process.env.SECRET_KEY) {
       const body = await req.json();
       if (body.clientEmail && body.clientName && body.clientPwd) {
@@ -33,16 +31,15 @@ export const POST = async (req: Request) => {
               status: 400,
             });
         }
-        const salt: string = await bcrypt.genSaltSync(10);
-        let encryptPwd: string = await bcrypt.hash(body.clientPwd, salt);
-
-
+        const plaintext = body.clientPwd;
+        const secretKey =  process.env.SECRET_KEY
+        const encryptedPwd = AES.encrypt(plaintext, secretKey).toString();
         const query = await db
           .insert(userTable)
           .values({
             name: body.clientName,
             email: body.clientEmail,
-            password: encryptPwd,
+            password: encryptedPwd,
             created_at: new Date(),
           })
           .returning();
@@ -52,14 +49,26 @@ export const POST = async (req: Request) => {
             id: query[0].id,
           },
         };
-        const authToken = jwt.sign(data, process.env.SECRET_KEY); 
-        const auth_token = cookies().get("authToken")?.value;
-        if (!auth_token) {
-          setCookies.set("authToken", authToken);
-        }else{
-          console.log("cookie already created of this name");
-        }
-        return new NextResponse(JSON.stringify({ message:"New user register successfully!" ,authToken:authToken}));
+        const authToken = jwt.sign(data, process.env.SECRET_KEY); //sign digital signature on token
+
+        //serialized & store token as a cookie value
+        const serialized: string | undefined = serialize(
+          "authToken",
+          authToken,
+          {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: "strict",
+            path: "/",
+          }
+        );
+
+        const response = new NextResponse(null, {
+          headers: {
+            "Set-Cookie": serialized,
+          },
+        });
+        return new NextResponse(JSON.stringify({ message:"New user register successfully!" }));
 
       }else {
         return new NextResponse(

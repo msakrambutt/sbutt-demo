@@ -7,12 +7,13 @@ const LoginUser = () => {
     const [token, setToken] = useState('');
   const handleGenerateToken = async () => {
     const payload = {
-      clientEmail: 'msakram@gmail.com',
-      clientPwd:'55',
+      clientName:"shahid",
+      clientEmail: 'msakrambutt@gmail.com',
+      clientPwd:'555',
      
     };
   
-  const response = await fetch('/api/client-login/', {
+  const response = await fetch('/api/client-register/', {
       
     method: "POST",
         mode:'no-cors',
@@ -41,7 +42,7 @@ const LoginUser = () => {
   return (
     <div>
     <Toaster  position="top-center"/>
-    <button onClick={handleGenerateToken}>Generate JWT</button>
+    <button className="bg-gray-700 text-white w-full py-5" onClick={handleGenerateToken}>Create New User</button>
     {token && <p>{token}</p>}
     </div>
   )

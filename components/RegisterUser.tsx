@@ -12,9 +12,9 @@ const RegisterUser = () => {
   
   const response = await fetch('/api/client-register/', {
       
-    method: "POST",
+        method:"POST",
         mode:'no-cors',
-        cache: 'no-store',
+        cache:'no-store',
         headers: {
           'Content-Type': 'application/json'
         },

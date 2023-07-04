@@ -1,6 +1,7 @@
 export const runtime = "experimental-edge";
 import { type NextRequest } from "next/server";
 import { jwtVerify, SignJWT } from "jose";
+
 interface UserJwtPayload {
   jti: string;
   iat: number;
@@ -19,7 +20,8 @@ export async function verifyAuth(token: string): Promise<UserJwtPayload | undefi
       token,
       new TextEncoder().encode(getJWTSecretKey())
     );
-
+    // console.log("verified in auth.ts",verified);
+    // console.log("verified in auth.ts payload ",verified.payload as UserJwtPayload);
     return verified.payload as UserJwtPayload;
   } catch (error) {}
 }
