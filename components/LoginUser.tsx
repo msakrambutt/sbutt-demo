@@ -7,9 +7,9 @@ const LoginUser = () => {
     const [token, setToken] = useState('');
   const handleGenerateToken = async () => {
     const payload = {
-      clientName:"shahid",
-      clientEmail: 'msakrambutt@gmail.com',
-      clientPwd:'555',
+      clientName:"shahid1",
+      clientEmail: 'msakrambutt1@gmail.com',
+      clientPwd:'5551',
      
     };
   
