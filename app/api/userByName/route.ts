@@ -55,7 +55,7 @@ export const GET = async (req:NextRequest) => {
     
     }catch(error){
           console.log(" Get request by UserName error:", error);
-        return NextResponse.json({ status: 500, message: "Internal Server Error." });
+          return NextResponse.json({ status: 500, message: "Internal Server Error." });
         }
     
   }

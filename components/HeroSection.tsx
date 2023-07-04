@@ -5,14 +5,58 @@ import Link from 'next/link';
 import LoginUser from './LoginUser';
 import PasswordResetForm from '../app/PasswordResetForm/page';
 import User_Token from '../app/getTokenFromCookie/cookies';
+import { JWTPayload, jwtVerify } from 'jose';
+
+let JWT_SECRET_KEY: string;
+if (typeof process.env.SECRET_KEY === "string") {
+  JWT_SECRET_KEY = process.env.SECRET_KEY;
+}
 
 const HeroSection = async() => {
-      const userToken = await User_Token();
-      // console.log(`user_Token: ${userToken}`);
+  const userToken = await User_Token();
+  let userName:string="";
+    try{
+      const verified = await jwtVerify(
+        userToken,
+        new TextEncoder().encode(JWT_SECRET_KEY)
+      );
+      console.log("token verify",verified);
+      if(verified){
+      const userId =
+      typeof verified.payload === 'object' &&
+      verified.payload !== null &&
+      'user' in verified.payload &&
+      typeof verified.payload.user === 'object' &&
+      verified.payload.user !== null &&
+      'id' in verified.payload.user
+        ? parseInt(verified.payload.user.id as string, 10)
+        : null;
+        if (userId === null) {
+          console.log('Invalid JWT payload or missing user ID');
+        } else {
+          console.log('User ID:', userId);
+        }
+        const response = await fetch(`http://localhost:3000/api/getData?userId=${userId}`, {
+        method: "GET",
+        cache:'no-store',
+        headers:{
+          'Content-Type':'application/json'
+        }
+      });
+      const query = await response.json();
+      console.log("User "+query.userData[0].name+" has login!");
+      userName=query.userData[0].name;
+      }
+    }catch(error){
+      console.log("Token has expired",error);
+    }
+
   return (
     <section className="text-gray-600 body-font">
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
-      <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p>
+      <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p><br/>
+      <p className='text-lg font-bold text-green-500'>{userName ? "User "+userName+" has login!" : "No user Login!"}</p><br/>
+
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>
