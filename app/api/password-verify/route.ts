@@ -1,7 +1,7 @@
 import { TokenExpiredError } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextResponse, NextRequest } from "next/server";
-import { db, userTable, ForgetPwd } from "@/lib/drizzle";
+import { db, users, ForgetPwd } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { jwtVerify } from "jose";
 
@@ -11,13 +11,15 @@ if (typeof process.env.SECRET_KEY === "string") {
 }
 
 export const POST = async (req: NextRequest) => {
-  const clientEmail:string="";
+  let userEmail:string="";
   try {
     if (!process.env.SECRET_KEY) {
       return;
     }
     const { token, clientEmail, newPassword } = await req.json();
     console.log(token+" email"+clientEmail+" newpassword"+newPassword);
+    userEmail=clientEmail;
+    console.log("userEmail",userEmail);
     const verified = await jwtVerify(
       token,
       new TextEncoder().encode(JWT_SECRET_KEY)
@@ -57,9 +59,9 @@ export const POST = async (req: NextRequest) => {
           const salt: string = bcrypt.genSaltSync(10);
           let newPass: string = await bcrypt.hash(newPassword, salt);
           const updatePwd = await db
-            .update(userTable)
+            .update(users)
             .set({ password: newPass })
-            .where(eq(userTable.email, resetToken[0].user_email))
+            .where(eq(users.email, resetToken[0].user_email))
             .returning();
           console.log(updatePwd);
           if (updatePwd.length === 0) {
@@ -84,10 +86,12 @@ export const POST = async (req: NextRequest) => {
       console.log("Token expiration time (exp) is missing");
     }
   } catch (error) {
+    console.log("catch block",userEmail);
     const checkToken = await db
           .select()
           .from(ForgetPwd)
-          .where(eq(ForgetPwd.user_email, clientEmail));
+          .where(eq(ForgetPwd.user_email, userEmail));
+          console.log("table field"+checkToken[0].user_email)
           if(checkToken.length===0){
             console.log("record deleted token already expire");
             //record deleted on send response reset again due to token expire
@@ -100,7 +104,7 @@ export const POST = async (req: NextRequest) => {
             console.log("record not deleted token  expire");
             const delRecord = await db
             .delete(ForgetPwd)
-            .where(eq(ForgetPwd.user_email, clientEmail)).returning();
+            .where(eq(ForgetPwd.user_email, userEmail)).returning();
             console.log(delRecord);
             return NextResponse.json({
               message: "Token has expired, reset password again.",
@@ -108,36 +112,6 @@ export const POST = async (req: NextRequest) => {
             });
           }
 
-    // Handle the case when token verification fails
-    // if (error instanceof TokenExpiredError ===false) {
-    //   // Delete specific user record from the db
-    //   console.log("check catch if condition");
-    //   console.log("emailToken",clientEmail);
-    //   if(clientEmail){
-    //   const delRecord = await db
-    //     .delete(ForgetPwd)
-    //     .where(eq(ForgetPwd.user_email, clientEmail)).returning();
-    //     console.log(delRecord);
-    //   }else{
-    //     return NextResponse.json({
-    //       message: "Token has expired, reset password again.",
-    //       status: 400,
-    //     });
-    //   }
-
-    // } else {
-    //   // Handle other errors
-    //   console.log("check catch else condition");
-    //   console.error("Token verification failed:", error);
-    //   return NextResponse.json({
-    //     status: 400,
-    //     message: "Invalid Token or it has been expired. Please try again.",
-    //   });
-    // }
-    // return NextResponse.json({
-    //         message: "Token has expired, reset password again.",
-    //         status: 400,
-    //       });
-    
+   
   }
 };

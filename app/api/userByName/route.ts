@@ -1,5 +1,5 @@
 import { NextResponse,NextRequest } from "next/server";
-import { db, userTable, playlistTable,watchTimeTable} from "@/lib/drizzle";
+import { db, users, playlist,watchVideo} from "@/lib/drizzle";
 import { eq} from "drizzle-orm";
 
 
@@ -18,29 +18,30 @@ export const GET = async (req:NextRequest) => {
         const result = await db
         .select({
           users: {
-            id: userTable.id,
-            name: userTable.name,
-            email: userTable.email,
-            created_at: userTable.created_at,
-            role: userTable.role,
+            _id: users._id,
+            name: users.name,
+            email: users.email,
+            created_at: users.created_at,
+            role: users.role,
           },
           playlist: {
-            id:playlistTable.id,
-            userId:playlistTable.user_id,
-            orderDate:playlistTable.order_date,
-            courseId:playlistTable.course_id
+            _id:playlist._id,
+            userId:playlist.user_id,
+            orderDate:playlist.order_date,
+            courseId:playlist.course_id,
+          
           },
-          watch_time: {
-            id:watchTimeTable.id,
-            playListID:watchTimeTable.playlist_id,
-            watchVideoNo:watchTimeTable.watch_video_no,
-            watchVideoID:watchTimeTable.watch_video_id
+          watched_video: {
+            _id:watchVideo._id,
+            playListID:playlist._id,
+            watchVideoNo:watchVideo.watch_video_no,
+            watchVideoID:watchVideo.watch_video_id
           },
         })
-        .from(userTable)
-        .fullJoin(playlistTable, eq(playlistTable.user_id,userTable.id))
-        .fullJoin(watchTimeTable, eq(watchTimeTable.playlist_id,playlistTable.id))
-        .where(eq(userTable.name,clientName));
+        .from(users)
+        .fullJoin(playlist, eq(playlist.user_id,users._id))
+        .fullJoin(watchVideo, eq(watchVideo.playlist_id,playlist._id))
+        .where(eq(users.name,clientName));
         
         if (result.length ===0) {
         return  NextResponse.json({ message: "This UserName not found", status: 400 });

@@ -5,9 +5,9 @@ const RegisterUser = () => {
     const [token, setToken] = useState('');
   const handleGenerateToken = async () => {
     const payload = {
-      clientName: "ali",
-      clientEmail: 'bhaiwork22@gmail.com',
-      clientPwd:'444',
+      name: "ali",
+      email: 'bhaiwork22@gmail.com',
+      password:'444',
     };
   
   const response = await fetch('/api/client-register/', {

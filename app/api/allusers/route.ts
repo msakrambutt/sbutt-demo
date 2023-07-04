@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { db, userTable, playlistTable, watchTimeTable } from "@/lib/drizzle";
+import { db, users, playlist, watchVideo} from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 
 let JWT_SECRET_KEY: string;
@@ -13,28 +13,28 @@ export const GET = async (req: NextRequest) => {
       const results = await db
       .select({
         users: {
-          id: userTable.id,
-          name: userTable.name,
-          email: userTable.email,
-          created_at: userTable.created_at,
-          role: userTable.role,
+          id: users._id,
+          name: users.name,
+          email: users.email,
+          created_at: users.created_at,
+          role: users.role,
         },
         playlist: {
-          id:playlistTable.id,
-          userId:playlistTable.user_id,
-          orderDate:playlistTable.order_date,
-          courseId:playlistTable.course_id
+          id:playlist._id,
+          userId:users._id,
+          orderDate:playlist.order_date,
+          courseId:playlist.course_id
         },
-        watch_time: {
-          id:watchTimeTable.id,
-          playListID:watchTimeTable.playlist_id,
-          watchVideoNo:watchTimeTable.watch_video_no,
-          watchVideoID:watchTimeTable.watch_video_id
+        watched_video: {
+          id:watchVideo._id,
+          playListID:playlist._id,
+          watchVideoNo:watchVideo.watch_video_no,
+          watchVideoID:watchVideo.watch_video_id
         },
       })
-        .from(userTable)
-        .fullJoin(playlistTable, eq(playlistTable.user_id, userTable.id))
-        .fullJoin(watchTimeTable,eq(watchTimeTable.playlist_id, playlistTable.id));
+        .from(users)
+        .fullJoin(playlist, eq(playlist.user_id, users._id))
+        .fullJoin(watchVideo,eq(watchVideo.playlist_id, playlist._id));
        
       if (results.length === 0) {
         return NextResponse.json({ message: "UserData not found", status: 400 });

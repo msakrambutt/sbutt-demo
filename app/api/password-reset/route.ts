@@ -2,7 +2,7 @@ import { sign,Jwt,verify} from 'jsonwebtoken';
 import {jwtVerify} from 'jose';
 import bcrypt, { hash } from 'bcryptjs';
 import nodemailer from 'nodemailer';
-import { db, userTable,ForgetPwd } from "@/lib/drizzle";
+import { db, users,ForgetPwd } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { NextResponse,NextRequest } from "next/server";
 
@@ -30,8 +30,8 @@ export const POST = async (req: NextRequest) => {
   }
     const user = await db
       .select()
-      .from(userTable)
-      .where(eq(userTable.email,email));
+      .from(users)
+      .where(eq(users.email,email));
       console.log(user);
   
       if (user.length === 0) {
@@ -80,7 +80,7 @@ export const POST = async (req: NextRequest) => {
       <a href="${resetLink}">${resetLink}</a>`,
   }
 
-  transporter.sendMail(mailOptions, (error, info) => {
+   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
         console.error(error);
         return new NextResponse(
@@ -91,7 +91,6 @@ export const POST = async (req: NextRequest) => {
         );
     } else {
         console.log('Email sent: ' + info.response);
-       
         return new NextResponse(
           JSON.stringify({
             status: 200,
@@ -101,6 +100,7 @@ export const POST = async (req: NextRequest) => {
     }
   })
 }catch(error) {
+
   console.log("POST request password-reset api error:", error);
   return NextResponse.json({ status: 500, message: "Internal Server Error." });
 }

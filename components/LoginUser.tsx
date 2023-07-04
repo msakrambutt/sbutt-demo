@@ -7,13 +7,13 @@ const LoginUser = () => {
     const [token, setToken] = useState('');
   const handleGenerateToken = async () => {
     const payload = {
-      clientName:"shahid1",
-      clientEmail: 'msakrambutt1@gmail.com',
-      clientPwd:'5551',
+      name:"shahid1",
+      email: 'msakrambutt1@gmail.com',
+      password:'5551',
      
     };
   
-  const response = await fetch('/api/client-register/', {
+  const response = await fetch('/api/register/', {
       
     method: "POST",
         mode:'no-cors',

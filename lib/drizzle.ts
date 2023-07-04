@@ -10,9 +10,8 @@ import {
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import { InferModel } from "drizzle-orm";
-
-export const userTable = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = pgTable("users", {
+  _id: serial("_id").primaryKey(),
   name: varchar("name", {
     length: 255,
   }).notNull(),
@@ -23,25 +22,25 @@ export const userTable = pgTable("users", {
     length: 255,
   }).notNull(),
   created_at: timestamp("created_at").notNull(),
-  role: varchar("role", { length: 30 }).notNull().default("user"),
+  role: varchar("role", { length: 50 }).notNull().default("user"),
 });
 
-export const playlistTable = pgTable("playlist", {
-  id: serial("id").primaryKey(),
+export const playlist = pgTable("playlist", {
+  _id: serial("_id").primaryKey(),
   user_id: integer("user_id")
     .notNull()
-    .references(() => userTable.id),
+    .references(() => users._id),
   order_date: timestamp("order_date").notNull(),
   course_id: varchar("course_id", {
     length: 255,
   }).notNull(),
 });
 
-export const watchTimeTable = pgTable("watch_time", {
-  id: serial("id").primaryKey(),
+export const watchVideo = pgTable("watched_video", {
+  _id: serial("_id").primaryKey(),
   playlist_id: integer("playlist_id")
     .notNull()
-    .references(() => playlistTable.id),
+    .references(() => playlist._id),
   watch_video_no: integer("watch_video_no").notNull(),
   watch_video_id: varchar("watch_video_id", {
     length: 255,
@@ -55,20 +54,19 @@ export const  ForgetPwd=pgTable("forgetpwd",{
   user_token:varchar("user_token",{
     length:255,
   }).notNull(),
-})
+});
 
-export type Users = InferModel<typeof userTable>;
-export type NewUsers = InferModel<typeof userTable, "insert">;
+export type Users = InferModel<typeof users>;
+export type NewUsers = InferModel<typeof users, "insert">;
 
-export type Playlist = InferModel<typeof playlistTable>;
-export type NewPlaylist = InferModel<typeof playlistTable, "insert">;
+export type Playlist = InferModel<typeof playlist>;
+export type NewPlaylist = InferModel<typeof playlist, "insert">;
 
-export type WatchTime = InferModel<typeof watchTimeTable>;
-export type NewWatchTime = InferModel<typeof watchTimeTable, "insert">;
+export type WatchTime = InferModel<typeof watchVideo>;
+export type NewWatchTime = InferModel<typeof watchVideo, "insert">;
 
-export type ForgetPwd = InferModel<typeof forgetPwd>;
-export type NewoFrgetPwd = InferModel<typeof forgetPwd, "insert">;
-
+export type ForgetPwd = InferModel<typeof ForgetPwd>;
+export type NewoFrgetPwd = InferModel<typeof ForgetPwd, "insert">;
 
 
 export const db = drizzle(sql);
