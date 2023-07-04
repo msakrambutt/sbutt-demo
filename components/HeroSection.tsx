@@ -36,7 +36,7 @@ const HeroSection = async() => {
         } else {
           console.log('User ID:', userId);
         }
-        const response = await fetch(`http://localhost:3000/api/getData?userId=${userId}`, {
+        const response = await fetch(`${process.env.BASE_URL}/api/getData?userId=${userId}`, {
         method: "GET",
         cache:'no-store',
         headers:{

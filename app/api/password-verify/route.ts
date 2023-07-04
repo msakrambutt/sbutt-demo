@@ -91,7 +91,6 @@ export const POST = async (req: NextRequest) => {
           .select()
           .from(ForgetPwd)
           .where(eq(ForgetPwd.user_email, userEmail));
-          console.log("table field"+checkToken[0].user_email)
           if(checkToken.length===0){
             console.log("record deleted token already expire");
             //record deleted on send response reset again due to token expire
