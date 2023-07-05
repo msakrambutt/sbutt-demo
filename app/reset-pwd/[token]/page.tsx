@@ -9,25 +9,19 @@ const ResetPassword = ({params}:any) => {
   const decodedTokenAndEmail = tokenAndEmail.replace(encodedDelimiter, delimiter);
   const [token, encodedEmail] = decodedTokenAndEmail.split(delimiter);
   const clientEmail = decodeURIComponent(encodedEmail);
-    // alert(token);
-    // alert(clientEmail);
-
- 
+  
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
   const [message, setMessage] = useState('');
 
-
   const handleResetPassword = async (e:any) => {
     e.preventDefault();
-
     if (newPassword !== confirmPassword) {
       setResetError('Passwords do not match');
       return;
     }
-
     try {
       // Send a request to your backend API to reset the password
       const response = await fetch('/api/password-verify', {
@@ -86,11 +80,7 @@ const ResetPassword = ({params}:any) => {
           <button type="submit"  className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" >Reset Password</button>
         </form>
       )}
-          {/* <h1>{token}</h1> */}
-
     </div>
-    
-
   );
 };
 

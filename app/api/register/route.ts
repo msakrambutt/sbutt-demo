@@ -64,7 +64,6 @@ export const POST = async (req: NextRequest) => {
     };
     const authToken = jwt.sign(data, process.env.SECRET_KEY);
     cookies().set("authToken", authToken);
-    console.log(authToken,cookies().get("authToken")?.value);
     return new NextResponse(
       JSON.stringify({ message: "New user register successfully!" })
     );

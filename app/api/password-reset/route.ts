@@ -1,7 +1,6 @@
 import { sign, Jwt, verify } from "jsonwebtoken";
 import { jwtVerify } from "jose";
 import bcrypt, { hash } from "bcryptjs";
-import nodemailer from "nodemailer";
 import { db, users, ForgetPwd } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { NextResponse, NextRequest } from "next/server";
@@ -19,7 +18,6 @@ export const POST = async (req: NextRequest) => {
       return;
     }
     const { email } = await req.json();
-    console.log(email);
     if (!email) {
       return new NextResponse(
         JSON.stringify({
@@ -29,8 +27,6 @@ export const POST = async (req: NextRequest) => {
       );
     }
     const user = await db.select().from(users).where(eq(users.email, email));
-    console.log(user);
-
     if (user.length === 0) {
       return new NextResponse(
         JSON.stringify({
@@ -39,11 +35,9 @@ export const POST = async (req: NextRequest) => {
         })
       );
     }
-    const expiresTime = 60; // Token expiration time in seconds
+    const expiresTime = 60; // Token expiration time in seconds(one minute)
     const expirationTime = Math.floor(Date.now() / 1000) + expiresTime;
-    console.log("pwd-reset", expirationTime);
     const token = sign({ email, exp: expirationTime }, JWT_SECRET_KEY);
-
     // Hash the JWT token for storage
     const salt: string = bcrypt.genSaltSync(10);
     let hashedToken: string = await bcrypt.hash(token, salt);
@@ -55,14 +49,11 @@ export const POST = async (req: NextRequest) => {
         user_token: hashedToken,
       })
       .returning();
-    console.log("forgetpwd insert ", result);
-
     const clientEmail = user[0].email;
     const delimiter = "|";
     const resetLink = `${
       process.env.BASE_URL
     }/reset-pwd/${token}${delimiter}${encodeURIComponent(clientEmail)}`;
-
     try {
       await transporter.sendMail({
         ...mailOptions,
@@ -70,15 +61,13 @@ export const POST = async (req: NextRequest) => {
         html: `<p>Click the following link to reset your password:</p>
       <a href="${resetLink}">${resetLink}</a>`,
       });
-      console.log("email send:");
       return new NextResponse(
         JSON.stringify({
           status: 200,
-          message: "sending email sucessfully.",
+          message: "Email send sucessfully.",
         })
       );
     } catch (error) {
-      console.log(error);
       return new NextResponse(
         JSON.stringify({
           status: 400,

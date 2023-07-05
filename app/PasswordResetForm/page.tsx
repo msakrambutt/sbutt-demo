@@ -25,17 +25,11 @@ const PasswordResetForm = () => {
             },
             body:JSON.stringify({email})
       })
-     
       console.log(response.status);
-      // console.log(data);
       if (response.ok) {
-        // const data =await response.json();
         console.log(response.ok)
-        // console.log("response from server",data);
         setMessage(response.ok+" , Email has been send to your mail id, follow the instructions");
-        // console.log(data);
         setEmail('');
-
       }else{
         console.log(response.ok)
         const errorData =await response.json();
