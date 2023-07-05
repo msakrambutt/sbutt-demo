@@ -12,9 +12,9 @@ if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
 }
 
+
 const HeroSection = async() => {
   const userToken = await User_Token();
-  
   let userName:string="";
   if(userToken){
     try{
@@ -58,7 +58,7 @@ const HeroSection = async() => {
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
       <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p><br/>
       <p className='text-lg font-bold text-green-500'>{userName ? "User "+userName+" has login!" : "No user Login!"}</p><br/>
-
+      <div><Link href={"/logout"}>Logout User!</Link></div>
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>

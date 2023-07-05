@@ -28,7 +28,7 @@ const PasswordResetForm = () => {
       console.log(response.status);
       if (response.ok) {
         console.log(response.ok)
-        setMessage(response.ok+" , Email has been send to your mail id, follow the instructions");
+        setMessage("Email has been send to your mail id, please follow the instructions to reset password");
         setEmail('');
       }else{
         console.log(response.ok)
