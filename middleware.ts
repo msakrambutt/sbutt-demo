@@ -1,8 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { verifyAuth } from "./lib/auth";
+import { cookies } from "next/headers";
 
 const middleware = async (req: NextRequest) => {
   const token = req.cookies.get("authToken")?.value;
+
+  console.log("middleware cookie value",token);
   const verifiedToken =
     token && (await verifyAuth(token).catch((err) => console.log(err)));
 

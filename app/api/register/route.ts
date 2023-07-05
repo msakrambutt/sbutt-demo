@@ -63,7 +63,12 @@ export const POST = async (req: NextRequest) => {
       },
     };
     const authToken = jwt.sign(data, process.env.SECRET_KEY);
-    cookies().set("authToken", authToken);
+    const expirationDate = new Date();
+    expirationDate.setFullYear(expirationDate.getFullYear() + 100); // Set the expiration to one years from now
+    cookies().set("authToken", authToken,{
+      expires: expirationDate,
+        path: "/", // Specify the path of the cookie
+    });
     return new NextResponse(
       JSON.stringify({ message: "New user register successfully!" })
     );

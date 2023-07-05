@@ -1,32 +1,32 @@
 import { cookies } from "next/headers";
 import { NextResponse,NextRequest } from "next/server";
-import { serialize } from 'cookie';
 
 
-export const GET = async (request:NextRequest) => {
+export const POST = async (req:NextRequest) => {
     try{
-      const req = request.nextUrl;
-      const user_Cookie= req.searchParams.get("user_Cookie") as string;
-      console.log("user_Cookie" ,user_Cookie);
-      if(user_Cookie){
-        cookies().set('authToken','');
-        /* remove cookies from request header */
-
+      const body = await req.json();
+        if(body.userCookie){
+        cookies().set("authToken","",{
+          expires: new Date(-1), // Set the expiration date to a past date
+          path: "/", // Specify the path of the cookie
+        });
+        console.log("cookie value "+cookies().get("authToken")?.value);
         return new NextResponse(
+          JSON.stringify({
+            message: "Cookie has been deleted!",
+            status: 200,
+          })
+        );
+        }
+        else{
+          return new NextResponse(
             JSON.stringify({
-              message: "Cookie has been deleted!",
-              status: 200,
+              message: "Cookie not found!",
+              status: 400,
             })
           );
-      }else{
-        return new NextResponse(
-            JSON.stringify({
-              message: "Method not allowed!",
-              status: 405,
-            })
-          );
-      }
-      
+        }
+        
     }catch(error){
         console.log(" Get request by UserToken  error:", error);
         return new NextResponse(

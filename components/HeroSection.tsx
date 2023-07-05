@@ -5,7 +5,8 @@ import Link from 'next/link';
 import LoginUser from './LoginUser';
 import PasswordResetForm from '../app/PasswordResetForm/page';
 import User_Token from '../app/getTokenFromCookie/cookies';
-import { JWTPayload, jwtVerify } from 'jose';
+import { jwtVerify } from 'jose';
+import { cookies } from 'next/headers';
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -15,6 +16,8 @@ if (typeof process.env.SECRET_KEY === "string") {
 
 const HeroSection = async() => {
   const userToken = await User_Token();
+  // const userToken=cookies().get("authToken")?.value;
+  console.log("herosection",userToken);
   let userName:string="";
   if(userToken){
     try{
@@ -22,7 +25,7 @@ const HeroSection = async() => {
         userToken,
         new TextEncoder().encode(JWT_SECRET_KEY)
       );
-      console.log("token verify",verified);
+      // console.log("token verify",verified);
       if(verified){
       const userId =
       typeof verified.payload === 'object' &&
@@ -36,7 +39,7 @@ const HeroSection = async() => {
         if (userId === null) {
           console.log('Invalid JWT payload or missing user ID');
         } else {
-          console.log('User ID:', userId);
+          // console.log('User ID:', userId);
         }
         const response = await fetch(`${process.env.BASE_URL}/api/getData?userId=${userId}`, {
         method: "GET",
@@ -46,7 +49,7 @@ const HeroSection = async() => {
         }
       });
       const query = await response.json();
-      console.log("User "+query.userData[0].name+" has login!");
+      // console.log("User "+query.userData[0].name+" has login!");
       userName=query.userData[0].name;
       }
     }catch(error){
@@ -58,7 +61,7 @@ const HeroSection = async() => {
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
       <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p><br/>
       <p className='text-lg font-bold text-green-500'>{userName ? "User "+userName+" has login!" : "No user Login!"}</p><br/>
-      <div><Link href={"/logout"}>Logout User!</Link></div>
+      <div><Link href={"/logoutUser"}>Logout User!</Link></div>
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>
