@@ -14,7 +14,9 @@ if (typeof process.env.SECRET_KEY === "string") {
 
 const HeroSection = async() => {
   const userToken = await User_Token();
+  
   let userName:string="";
+  if(userToken){
     try{
       const verified = await jwtVerify(
         userToken,
@@ -50,7 +52,7 @@ const HeroSection = async() => {
     }catch(error){
       console.log("Token has expired",error);
     }
-
+  }
   return (
     <section className="text-gray-600 body-font">
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>

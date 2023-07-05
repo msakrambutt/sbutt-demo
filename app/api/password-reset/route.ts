@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer';
 import { db, users,ForgetPwd } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { NextResponse,NextRequest } from "next/server";
+import {mailOptions, transporter} from '../../../lib/nodeMailer';
 
 
 let JWT_SECRET_KEY: string;
@@ -59,50 +60,44 @@ export const POST = async (req: NextRequest) => {
           })
           .returning();   
         console.log("forgetpwd insert ",result);      
-   // Send the password reset email
-  const transporter = nodemailer.createTransport({
-    // Configure your email service
-    service: 'gmail',
-    host:'smtp.gmail.com',
-    auth: {
-      user: 'msakrambutt@gmail.com',
-      pass: process.env.GMAIL_PWD,
-    }
-  });
+   
   const clientEmail=user[0].email;
   const delimiter = '|';
     const resetLink = `${process.env.BASE_URL}/reset-pwd/${token}${delimiter}${encodeURIComponent(clientEmail)}`;
-    const mailOptions = {
-      from: 'msakrambutt@gmail.com',
-      to: 'msakrambutt@gmail.com',
-      subject: 'Password Reset',
-      html:`<p>Click the following link to reset your password:</p>
+  
+ try{
+   await transporter.sendMail({
+    ...mailOptions,
+    subject:'Password Reset',
+    html:`<p>Click the following link to reset your password:</p>
       <a href="${resetLink}">${resetLink}</a>`,
-  }
+   });
+   console.log("email send:");
+      return new NextResponse(
+        JSON.stringify({
+          status: 200,
+          message: "sending email sucessfully.",
+        })
+      );
+ }catch(error){
+    console.log(error);
+    return new NextResponse(
+              JSON.stringify({
+                status: 400,
+                message: "Error sending email.",
+              })
+            );
+ }
 
-   transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-        console.error(error);
-        return new NextResponse(
-          JSON.stringify({
-            status: 400,
-            message: "Error sending email.",
-          })
-        );
-    } else {
-        console.log('Email sent: ' + info.response);
-        return new NextResponse(
-          JSON.stringify({
-            status: 200,
-            message: "email send sucessfully.",
-          })
-        );
-    }
-  })
 }catch(error) {
 
-  console.log("POST request password-reset api error:", error);
-  return NextResponse.json({ status: 500, message: "Internal Server Error." });
+  console.error(error);
+  return new NextResponse(
+    JSON.stringify({
+      status: 500,
+      message: "Internal server error.",
+    })
+  );
 }
 
 }

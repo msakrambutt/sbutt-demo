@@ -14,9 +14,7 @@ const LoginUser = () => {
     };
   
   const response = await fetch('/api/register/', {
-      
     method: "POST",
-        mode:'no-cors',
         cache: 'no-store',
         headers: {
           'Content-Type': 'application/json'
