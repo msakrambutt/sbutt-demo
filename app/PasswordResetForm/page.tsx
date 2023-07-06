@@ -26,15 +26,16 @@ const PasswordResetForm = () => {
             body:JSON.stringify({email})
       })
       console.log(response.status);
+      const data=await response.json();
       if (response.ok) {
-        console.log(response.ok)
-        setMessage("Email has been send to your mail id, please follow the instructions to reset password");
+        console.log(response.ok);
+        setMessage(data.message);
         setEmail('');
       }else{
-        console.log(response.ok)
+        console.log(response.ok);
         const errorData =await response.json();
         console.log("Error response from server",errorData)
-        setMessage("Unexpted end of JSON Error");
+        setMessage(data.message);
         setEmail('');
       }
       

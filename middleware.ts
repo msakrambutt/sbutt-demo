@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { verifyAuth } from "./lib/auth";
-import { cookies } from "next/headers";
 
 const middleware = async (req: NextRequest) => {
+
   const token = req.cookies.get("authToken")?.value;
 
   console.log("middleware cookie value",token);
@@ -13,6 +13,7 @@ const middleware = async (req: NextRequest) => {
   if (req.nextUrl.pathname.startsWith("/auth/signin") && !verifiedToken) {
     return NextResponse.next();
   }
+  
   //redirect on main page user token verified
   if (
     req.url.includes("/auth/signin") ||
@@ -20,6 +21,7 @@ const middleware = async (req: NextRequest) => {
   ) {
     return NextResponse.redirect(new URL("/", req.url));
   }
+
   if (!verifiedToken) {
     if (req.nextUrl.pathname.startsWith("/api")) {
       return new NextResponse(

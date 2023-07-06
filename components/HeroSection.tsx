@@ -6,17 +6,15 @@ import LoginUser from './LoginUser';
 import PasswordResetForm from '../app/PasswordResetForm/page';
 import User_Token from '../app/getTokenFromCookie/cookies';
 import { jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
+import SignOut from '@/app/signout/page';
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
 }
 
-
 const HeroSection = async() => {
   const userToken = await User_Token();
-  // const userToken=cookies().get("authToken")?.value;
   console.log("herosection",userToken);
   let userName:string="";
   if(userToken){
@@ -61,7 +59,8 @@ const HeroSection = async() => {
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
       <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p><br/>
       <p className='text-lg font-bold text-green-500'>{userName ? "User "+userName+" has login!" : "No user Login!"}</p><br/>
-      <div><Link href={"/logoutUser"}>Logout User!</Link></div>
+      {/* for deletion */}
+      <div><Link href={"/signout"}>Signout User!</Link></div> 
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>
@@ -70,7 +69,6 @@ const HeroSection = async() => {
       <div className='py-10 bg-slate-500 mb-5 text-white'>
       <PasswordResetForm/>
       </div>
-      <LoginUser/>
       <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Online Education Learning Platform
         <br className="hidden lg:inline-block"/>IT Solution
       </h1>

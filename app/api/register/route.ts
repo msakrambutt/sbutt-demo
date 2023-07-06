@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { serialize } from "cookie";
 import { db, users } from "@/lib/drizzle";
 import { eq, or } from "drizzle-orm";
 import { cookies } from "next/headers";
+import { serialize } from "cookie";
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -63,11 +63,14 @@ export const POST = async (req: NextRequest) => {
       },
     };
     const authToken = jwt.sign(data, process.env.SECRET_KEY);
-    const expirationDate = new Date();
-    expirationDate.setFullYear(expirationDate.getFullYear() + 100); // Set the expiration to one years from now
+    // cookies().set("authToken", authToken);
+
     cookies().set("authToken", authToken,{
-      expires: expirationDate,
-        path: "/", // Specify the path of the cookie
+      httpOnly:true,
+      secure:process.env.NODE_ENV!=="development",
+      sameSite:'strict',
+        maxAge:60*60,
+        path: "/",
     });
     return new NextResponse(
       JSON.stringify({ message: "New user register successfully!" })

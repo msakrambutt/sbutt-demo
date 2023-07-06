@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { serialize } from "cookie";
 import { db, users } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";

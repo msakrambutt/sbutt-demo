@@ -64,7 +64,7 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse(
         JSON.stringify({
           status: 200,
-          message: "Email send sucessfully.",
+          message: "Email has been send to your mail id, please follow the instructions to reset password.",
         })
       );
     } catch (error) {

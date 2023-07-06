@@ -6,12 +6,15 @@ export const POST = async (req:NextRequest) => {
     try{
       const body = await req.json();
         if(body.userCookie){
-        cookies().set("authToken","",{
-          expires: new Date(-1), // Set the expiration date to a past date
-          path: "/", // Specify the path of the cookie
+          cookies().set("authToken","",{
+            httpOnly:true,
+          secure:process.env.NODE_ENV!=="development",
+          sameSite:'strict',
+          expires:new Date(0),
+          path: "/",
         });
-        console.log("cookie value "+cookies().get("authToken")?.value);
-        return new NextResponse(
+        console.log("authToken",cookies().get("authToken"));
+          return new NextResponse(
           JSON.stringify({
             message: "Cookie has been deleted!",
             status: 200,
