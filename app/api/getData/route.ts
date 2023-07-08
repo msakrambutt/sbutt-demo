@@ -1,5 +1,5 @@
 import { NextResponse,NextRequest } from "next/server";
-import { db, users, playlist,watchVideo} from "@/lib/drizzle";
+import { db, users, playlist,watched_time} from "@/lib/drizzle";
 import { eq} from "drizzle-orm";
 
 export const GET = async (request:NextRequest) => {

@@ -1,42 +1,20 @@
-import { cookies } from "next/headers";
 import { NextResponse,NextRequest } from "next/server";
 
-
-export const POST = async (req:NextRequest) => {
+export const GET = async ()=>{
     try{
-      const body = await req.json();
-        if(body.userCookie){
-          cookies().set("authToken","",{
-            httpOnly:true,
-          secure:process.env.NODE_ENV!=="development",
-          sameSite:'strict',
+      const response=NextResponse.json({
+        message:"Logout Sucessfully",
+        success:true,
+      });
+        response.cookies.set("authToken","",{
+          httpOnly:true,
           expires:new Date(0),
-          path: "/",
-        });
-        console.log("authToken",cookies().get("authToken"));
-          return new NextResponse(
-          JSON.stringify({
-            message: "Cookie has been deleted!",
-            status: 200,
-          })
-        );
-        }
-        else{
-          return new NextResponse(
-            JSON.stringify({
-              message: "Cookie not found!",
-              status: 400,
-            })
-          );
-        }
-        
-    }catch(error){
-        console.log(" Get request by UserToken  error:", error);
-        return new NextResponse(
-            JSON.stringify({
-              message: "Internal server error!",
-              status: 500,
-            })
-          );
+         });
+         return response;
+    }catch(error:any){
+      return new NextResponse(
+        JSON.stringify(
+          {status:500,message:error.message}
+        ));
     }
 }

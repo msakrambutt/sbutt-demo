@@ -2,7 +2,6 @@ import Image from 'next/image'
 import React from 'react'
 import logo from "../../dine-hackathon/pics/logo.jpeg";
 import Link from 'next/link';
-import LoginUser from './LoginUser';
 import PasswordResetForm from '../app/PasswordResetForm/page';
 import User_Token from '../app/getTokenFromCookie/cookies';
 import { jwtVerify } from 'jose';
@@ -14,16 +13,18 @@ if (typeof process.env.SECRET_KEY === "string") {
 }
 
 const HeroSection = async() => {
-  const userToken = await User_Token();
-  console.log("herosection",userToken);
+  const token = await User_Token();
+  console.log("herosection",token);
   let userName:string="";
-  if(userToken){
+  if(token){
     try{
       const verified = await jwtVerify(
-        userToken,
+        token,
         new TextEncoder().encode(JWT_SECRET_KEY)
       );
-      // console.log("token verify",verified);
+     
+
+      console.log("token verify",verified);
       if(verified){
       const userId =
       typeof verified.payload === 'object' &&
@@ -47,9 +48,9 @@ const HeroSection = async() => {
         }
       });
       const query = await response.json();
-      // console.log("User "+query.userData[0].name+" has login!");
-      userName=query.userData[0].name;
-      }
+      console.log("User "+query.userData[0].name+" has login!");
+      userName=query.userData[0].name ;
+    }
     }catch(error){
       console.log("Token has expired",error);
     }
@@ -57,10 +58,11 @@ const HeroSection = async() => {
   return (
     <section className="text-gray-600 body-font">
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
-      <p className='text-sm'>{userToken ? userToken : "Token Not exist"}</p><br/>
-      <p className='text-lg font-bold text-green-500'>{userName ? "User "+userName+" has login!" : "No user Login!"}</p><br/>
-      {/* for deletion */}
-      <div><Link href={"/signout"}>Signout User!</Link></div> 
+      <p className='text-sm'>{token ? token : "Token Not exist"}</p><br/>
+      <p className='text-lg font-bold text-green-500'>{userName && userName? "User "+userName+" has login!" : "No user Login!"}</p><br/>
+      {/* Cookie deletion route */}
+      <div><Link href={"/signout"}>Signout User! on Client side</Link></div> 
+      <div><Link href={"/logoutUser"}>Signout User! by using logout API also done.</Link></div> 
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>

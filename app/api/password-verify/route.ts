@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
         .where(eq(ForgetPwd.user_email, emailToken));
       if (resetToken.length === 0) {
         return NextResponse.json({
-          message: "Token not found in db .",
+          message: "Token not found or it will expire , plz try.",
           status: 400,
         });
       }

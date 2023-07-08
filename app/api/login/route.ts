@@ -56,7 +56,11 @@ export const POST = async (req: NextRequest) => {
         },
       };
       const authToken = jwt.sign(data, process.env.SECRET_KEY);
-      cookies().set("authToken", authToken);
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+      cookies().set("authToken", authToken,{
+        expires: oneYearFromNow,
+      });
       return new NextResponse(
         JSON.stringify({
           message: "User Credential found, Allow user to access ",

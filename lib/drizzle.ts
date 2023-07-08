@@ -36,7 +36,7 @@ export const playlist = pgTable("playlist", {
   }).notNull(),
 });
 
-export const watchVideo = pgTable("watched_video", {
+export const watched_time = pgTable("watche_time", {
   _id: serial("_id").primaryKey(),
   playlist_id: integer("playlist_id")
     .notNull()
@@ -62,8 +62,8 @@ export type NewUsers = InferModel<typeof users, "insert">;
 export type Playlist = InferModel<typeof playlist>;
 export type NewPlaylist = InferModel<typeof playlist, "insert">;
 
-export type WatchTime = InferModel<typeof watchVideo>;
-export type NewWatchTime = InferModel<typeof watchVideo, "insert">;
+export type WatchTime = InferModel<typeof watched_time>;
+export type NewWatchTime = InferModel<typeof watched_time, "insert">;
 
 export type ForgetPwd = InferModel<typeof ForgetPwd>;
 export type NewoFrgetPwd = InferModel<typeof ForgetPwd, "insert">;

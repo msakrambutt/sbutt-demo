@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
       return;
     }
     const body = await req.json();
-
+    console.log()
     if (!body.email || !body.name || !body.password) {
       return new NextResponse(
         JSON.stringify({
@@ -63,14 +63,10 @@ export const POST = async (req: NextRequest) => {
       },
     };
     const authToken = jwt.sign(data, process.env.SECRET_KEY);
-    // cookies().set("authToken", authToken);
-
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     cookies().set("authToken", authToken,{
-      httpOnly:true,
-      secure:process.env.NODE_ENV!=="development",
-      sameSite:'strict',
-        maxAge:60*60,
-        path: "/",
+      expires: oneYearFromNow,
     });
     return new NextResponse(
       JSON.stringify({ message: "New user register successfully!" })

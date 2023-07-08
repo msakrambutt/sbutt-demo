@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
         })
       );
     }
-    const expiresTime = 60; // Token expiration time in seconds(one minute)
+    const expiresTime = 120; // Token expiration time in seconds(one minute)
     const expirationTime = Math.floor(Date.now() / 1000) + expiresTime;
     const token = sign({ email, exp: expirationTime }, JWT_SECRET_KEY);
     // Hash the JWT token for storage
@@ -64,7 +64,7 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse(
         JSON.stringify({
           status: 200,
-          message: "Email has been send to your mail id, please follow the instructions to reset password.",
+          message: `Email has been send to your mail id, please follow the instructions to reset password.`,
         })
       );
     } catch (error) {

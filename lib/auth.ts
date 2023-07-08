@@ -20,8 +20,6 @@ export async function verifyAuth(token: string): Promise<UserJwtPayload | undefi
       token,
       new TextEncoder().encode(getJWTSecretKey())
     );
-    // console.log("verified in auth.ts",verified);
-    // console.log("verified in auth.ts payload ",verified.payload as UserJwtPayload);
     return verified.payload as UserJwtPayload;
   } catch (error) {}
 }

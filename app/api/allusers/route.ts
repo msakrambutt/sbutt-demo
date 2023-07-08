@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { db, users, playlist, watchVideo} from "@/lib/drizzle";
+import { db, users, playlist, watched_time} from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 
 let JWT_SECRET_KEY: string;
@@ -25,16 +25,16 @@ export const GET = async (req: NextRequest) => {
           orderDate:playlist.order_date,
           courseId:playlist.course_id
         },
-        watched_video: {
-          id:watchVideo._id,
+        watched_time: {
+          id:watched_time._id,
           playListID:playlist._id,
-          watchVideoNo:watchVideo.watch_video_no,
-          watchVideoID:watchVideo.watch_video_id
+          watchVideoNo:watched_time.watch_video_no,
+          watchVideoID:watched_time.watch_video_id
         },
       })
         .from(users)
         .fullJoin(playlist, eq(playlist.user_id, users._id))
-        .fullJoin(watchVideo,eq(watchVideo.playlist_id, playlist._id));
+        .fullJoin(watched_time,eq(watched_time.playlist_id, playlist._id));
        
       if (results.length === 0) {
         return NextResponse.json({ message: "UserData not found", status: 400 });

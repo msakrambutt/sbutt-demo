@@ -1,19 +1,16 @@
 "use client";
-import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 
-const LoginUser = () => {
-    const [token, setToken] = useState('');
+const Login = () => {
   const handleGenerateToken = async () => {
     const payload = {
-      name:"shahid1",
-      email: 'msakrambutt1@gmail.com',
+      email: 'msakrambutt@gmail.com',
       password:'555',
      
     };
   
-  const response = await fetch('/api/register/', {
+  const response = await fetch('/api/login/', {
     method: "POST",
         cache: 'no-store',
         headers: {
@@ -29,7 +26,6 @@ const LoginUser = () => {
       position: 'top-center',
     };
     console.log(response.status);
-    setToken(data.authToken);
   }else{
     toast.error("user login error"), {
       position: 'top-center',
@@ -40,10 +36,9 @@ const LoginUser = () => {
   return (
     <div>
     <Toaster  position="top-center"/>
-    <button className="bg-gray-700 text-white w-full py-5" onClick={handleGenerateToken}>Create New User</button>
-    {token && <p>{token}</p>}
+    <button className="bg-gray-700 text-white w-full py-5" onClick={handleGenerateToken}>Login User</button>
     </div>
   )
 }
 
-export default LoginUser
+export default Login
