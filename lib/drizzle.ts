@@ -6,7 +6,6 @@ import {
   varchar,
   timestamp,
 } from "drizzle-orm/pg-core";
-//please not change userTable instead of users
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import { InferModel } from "drizzle-orm";
@@ -36,7 +35,7 @@ export const playlist = pgTable("playlist", {
   }).notNull(),
 });
 
-export const watched_time = pgTable("watche_time", {
+export const watched_time = pgTable("watched_time", {
   _id: serial("_id").primaryKey(),
   playlist_id: integer("playlist_id")
     .notNull()
@@ -66,7 +65,7 @@ export type WatchTime = InferModel<typeof watched_time>;
 export type NewWatchTime = InferModel<typeof watched_time, "insert">;
 
 export type ForgetPwd = InferModel<typeof ForgetPwd>;
-export type NewoFrgetPwd = InferModel<typeof ForgetPwd, "insert">;
+export type NewFrgetPwd = InferModel<typeof ForgetPwd, "insert">;
 
 
 export const db = drizzle(sql);

@@ -23,8 +23,8 @@ const SignIn = async() => {
       </div>
       <button  className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">SignIn</button>
     </div>
-    {/* <div><Register/></div><br/> */}
-    <div><Login/></div>
+    <div><Register/></div><br/>
+    {/* <div><Login/></div> */}
   </div>
 </section>
   )

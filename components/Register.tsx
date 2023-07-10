@@ -5,8 +5,8 @@ import toast, { Toaster } from 'react-hot-toast';
 const Register = () => {
   const handleGenerateToken = async () => {
     const payload = {
-      name:"shahid",
-      email: 'msakrambutt@gmail.com',
+      name:"bhai",
+      email: 'bhaiwork22plus@gmail.com',
       password:'555',
      
     };

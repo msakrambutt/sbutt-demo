@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { db, users, ForgetPwd } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
 import { NextResponse, NextRequest } from "next/server";
-import { mailOptions, transporter } from "../../../lib/nodeMailer";
+import { mailOptions, transporter } from "@/lib/nodeMailer";
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -48,10 +48,7 @@ export const POST = async (req: NextRequest) => {
         user_token: hashedToken,
       })
       .returning();
-
-      console.log(result);
     const clientEmail = user[0].email;
-    console.log(clientEmail);
     const delimiter = "|";
     const resetLink = `${
       process.env.BASE_URL

@@ -5,7 +5,9 @@ import Link from 'next/link';
 import PasswordResetForm from '../app/PasswordResetForm/page';
 import User_Token from '../app/getTokenFromCookie/cookies';
 import { jwtVerify } from 'jose';
-import SignOut from '@/app/signout/page';
+// import SignOut from '@/app/signout/page';
+// import jwt,{JwtPayload} from "jsonwebtoken";
+
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -14,7 +16,12 @@ if (typeof process.env.SECRET_KEY === "string") {
 
 const HeroSection = async() => {
   const token = await User_Token();
-  console.log("herosection",token);
+  //first method to get userid from token
+  // const decodeToken=jwt.verify(token,JWT_SECRET_KEY) as JwtPayload;
+  // console.log("decode Token "+decodeToken.user.id);
+
+
+  // console.log("herosection",token);
   let userName:string="";
   if(token){
     try{
@@ -61,8 +68,8 @@ const HeroSection = async() => {
       <p className='text-sm'>{token ? token : "Token Not exist"}</p><br/>
       <p className='text-lg font-bold text-green-500'>{userName && userName? "User "+userName+" has login!" : "No user Login!"}</p><br/>
       {/* Cookie deletion route */}
-      <div><Link href={"/signout"}>Signout User! on Client side</Link></div> 
-      <div><Link href={"/logoutUser"}>Signout User! by using logout API also done.</Link></div> 
+      {/* <div><Link href={"/signout"}>Signout User! on Client side</Link></div>  */}
+      <div><Link href={"/logoutUser"}>Signout User!.</Link></div> 
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
       <Image className="object-cover object-center rounded" alt="hero" src={logo} width={300} height={300}/>

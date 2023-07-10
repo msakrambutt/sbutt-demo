@@ -1,15 +1,19 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verifyAuth } from "./lib/auth";
 
-const middleware = async (req:NextRequest,res:NextResponse) => {
+const middleware = async (req:NextRequest) => {
 
- const token = req.cookies.get("authToken")?.value;
- const verifiedToken =
+ const path=req.nextUrl.pathname;
+ const token = req.cookies.get("authToken")?.value || '';
+   const verifiedToken =
     token && (await verifyAuth(token).catch((err) => console.log(err)));
+
   //path match  when user token not verified keep on this page 
-  if (req.nextUrl.pathname.startsWith("/auth/signin") && !verifiedToken) {
+  if (path.startsWith("/auth/signin") && !verifiedToken) {
     return NextResponse.next();
   }
+
+
   // //redirect on main page user token verified
   if (
     req.url.includes("/auth/signin") ||
@@ -33,6 +37,8 @@ const middleware = async (req:NextRequest,res:NextResponse) => {
   
 export default middleware;
 export const config = {
-  matcher: ["/", "/auth/signin"],
+  matcher: ["/"
+  , "/auth/signin"
+],
 };
 

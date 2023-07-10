@@ -6,7 +6,7 @@ const Login = () => {
   const handleGenerateToken = async () => {
     const payload = {
       email: 'msakrambutt@gmail.com',
-      password:'555',
+      password:'444',
      
     };
   

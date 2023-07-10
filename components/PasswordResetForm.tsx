@@ -12,7 +12,7 @@ const PasswordResetForm = () => {
     }
     try {
       // Call the password reset API
-      const response = await fetch('/api/password-reset/', {
+      const response = await fetch('/api/resetpassword/', {
             method: "POST",
             cache: 'no-store',
             headers: {

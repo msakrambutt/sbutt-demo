@@ -1,16 +1,13 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { TransportOptions } from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
-    // Configure your email service
-    service: 'gmail',
-    host:'smtp.gmail.com',
+    service:process.env.SERVICE_NAME,
+    host:process.env.HOST_NAME,
     auth: {
-      user: 'msakrambutt@gmail.com',
-      pass: process.env.GMAIL_PWD,
+      user:process.env.MAIL_ID,
+      pass:process.env.MAIL_PWD,
     }
-  });
+  }as TransportOptions);
   export const mailOptions={
-    from: 'msakrambutt@gmail.com',
-    to: 'msakrambutt@gmail.com',
-      
+    from:process.env.MAIL_ID,
   }

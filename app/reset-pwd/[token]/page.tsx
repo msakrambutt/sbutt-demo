@@ -24,7 +24,7 @@ const ResetPassword = ({params}:any) => {
     }
     try {
       // Send a request to your backend API to reset the password
-      const response = await fetch('/api/password-verify', {
+      const response = await fetch('/api/passwordupdate/', {
         method: 'POST',
         cache:'no-store',
         body: JSON.stringify({ token,clientEmail,newPassword }),
