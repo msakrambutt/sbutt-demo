@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { db, users } from "@/lib/drizzle";
+import { users } from "@/lib/drizzle";
 import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
 
 
 let JWT_SECRET_KEY: string;

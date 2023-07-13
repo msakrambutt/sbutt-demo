@@ -1,0 +1,6 @@
+{
+    "out": "./drizzle/migrations",
+    "schema": "./src/lib/drizzle.ts",
+    "breakpoints": false
+  }
+  

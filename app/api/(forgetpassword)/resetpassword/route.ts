@@ -1,6 +1,7 @@
 import { sign} from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { db, users, ForgetPwd } from "@/lib/drizzle";
+import { users, ForgetPwd } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { NextResponse, NextRequest } from "next/server";
 import { mailOptions, transporter } from "@/lib/nodeMailer";

@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { db, users } from "@/lib/drizzle";
+import { users } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import jwt from "jsonwebtoken";
 
 let JWT_SECRET_KEY: string;

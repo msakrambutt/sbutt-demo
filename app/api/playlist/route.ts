@@ -2,7 +2,8 @@ import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import { db,playlist } from "@/lib/drizzle";
+import { playlist } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { playListCreationSchema } from "./validations";
@@ -12,7 +13,10 @@ import { NewPlaylist } from "@/lib/drizzle";
 export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
     const requestHeaders = new Headers(request.headers);
+    console.log("requestHeaders: ",requestHeaders);
     const user_data = requestHeaders.get("user_data");
+    console.log("user_data: ",user_data);
+
     let playlists: any;
     playlists = await db
       .select()
@@ -57,7 +61,9 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 export async function POST(request: Request) {
   try {
     const requestHeaders = new Headers(request.headers);
+    console.log("requestHeaders: ",requestHeaders);
     const user_data = requestHeaders.get("user_data");
+    console.log("user_data: ",user_data);
 
     const body = await request.json();
     const data = {
@@ -65,7 +71,9 @@ export async function POST(request: Request) {
       order_date: new Date(body.order_date),
       user_id: user_data,
     };
+    console.log("data: ",data);
     const { error, value } = playListCreationSchema.validate(data);
+    console.log("value: ",value);
 
     if (error) {
       return new NextResponse(JSON.stringify(error.details[0]), {

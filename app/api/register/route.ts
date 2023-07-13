@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { db, users } from "@/lib/drizzle";
+import { users } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { eq, or } from "drizzle-orm";
 import { cookies } from "next/headers";
-import { serialize } from "cookie";
 
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
@@ -17,7 +17,6 @@ export const POST = async (req: NextRequest) => {
       return;
     }
     const body = await req.json();
-    console.log()
     if (!body.email || !body.name || !body.password) {
       return new NextResponse(
         JSON.stringify({

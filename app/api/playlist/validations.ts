@@ -11,5 +11,6 @@ import Joi from 'joi';
 export const playListCreationSchema = Joi.object({
     user_id: Joi.number().integer().required(),
     order_date: Joi.date().required(),
-    course_id: Joi.number().integer().required(),
+    course_id: Joi.string().max(255).required(),
   });
+  

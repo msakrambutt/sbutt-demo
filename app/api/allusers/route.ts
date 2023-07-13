@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { db, users, playlist, watched_time} from "@/lib/drizzle";
+import {users, playlist, watched_time} from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 
 let JWT_SECRET_KEY: string;
@@ -29,7 +30,8 @@ export const GET = async (req: NextRequest) => {
           id:watched_time._id,
           playListID:playlist._id,
           watchVideoNo:watched_time.watch_video_no,
-          watchVideoID:watched_time.watch_video_id
+          watchVideoID:watched_time.watch_video_id,
+          completed:watched_time.completed
         },
       })
         .from(users)

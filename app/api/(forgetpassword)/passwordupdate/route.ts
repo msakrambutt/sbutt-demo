@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { NextResponse, NextRequest } from "next/server";
-import { db, users, ForgetPwd } from "@/lib/drizzle";
+import { users, ForgetPwd } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { jwtVerify } from "jose";
 

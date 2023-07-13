@@ -5,6 +5,7 @@ import {
   serial,
   varchar,
   timestamp,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
@@ -44,6 +45,17 @@ export const watched_time = pgTable("watched_time", {
   watch_video_id: varchar("watch_video_id", {
     length: 255,
   }).notNull(),
+  completed: boolean("completed").default(false),
+});
+
+export const certificate=pgTable("certificate_issue",{
+  _id: serial("_id").primaryKey(),
+  user_id: integer("user_id")
+    .notNull()
+    .references(() => users._id),
+  course_id:integer("course_id").notNull(),
+  completion_date:timestamp("completion_date").notNull(),
+  certificate_issued_date:timestamp("certificate_issued_date").notNull(),
 });
 
 export const  ForgetPwd=pgTable("forgetpwd",{
@@ -61,11 +73,16 @@ export type NewUsers = InferModel<typeof users, "insert">;
 export type Playlist = InferModel<typeof playlist>;
 export type NewPlaylist = InferModel<typeof playlist, "insert">;
 
+export type certificate = InferModel<typeof certificate>;
+export type Newcertificate = InferModel<typeof certificate, "insert">;
+
 export type WatchTime = InferModel<typeof watched_time>;
 export type NewWatchTime = InferModel<typeof watched_time, "insert">;
+
 
 export type ForgetPwd = InferModel<typeof ForgetPwd>;
 export type NewFrgetPwd = InferModel<typeof ForgetPwd, "insert">;
 
 
-export const db = drizzle(sql);
+// export const db = drizzle(sql);
+

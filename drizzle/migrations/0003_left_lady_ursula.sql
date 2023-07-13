@@ -1,0 +1,1 @@
+ALTER TABLE "watched_time" ALTER COLUMN "watch_video_id" SET DATA TYPE varchar(255);

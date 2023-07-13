@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db,watched_time } from "@/lib/drizzle";
+import { watched_time } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { watchedVideosCreationSchema } from "./validations";
 // import { NewWatchedTime } from "@/lib/drizzle";
@@ -9,10 +10,13 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
   try {
     const requestHeaders = new Headers(request.headers);
     const user_data = requestHeaders.get("user_data");
-
     const urlParams = new URLSearchParams(request.url.split("?")[1]);
+    console.log("urlParams ",urlParams);
+
     const playlistID =
       urlParams.get("playlistID") !== null ? urlParams.get("playlistID") : -1;
+      console.log("playlistID ",playlistID);
+
 
     let records: any;
     if (playlistID === "" || parseInt(playlistID as string) === -1) {
@@ -28,9 +32,7 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
       records = await db
         .select()
         .from(watched_time)
-        .where(
-            eq(watched_time.playlist_id, parseInt(playlistID as string))
-        );
+        .where(eq(watched_time.playlist_id, parseInt(playlistID as string)));
     }
 
     let json_response = {
@@ -64,12 +66,13 @@ export const GET = async (request: NextRequest, response: NextResponse) => {
 
 export async function POST(request: Request) {
   try {
-
     const body = await request.json();
     const data = {
-      ...body
+      ...body,
     };
+    console.log("body: ",body);
     const { error, value } = watchedVideosCreationSchema.validate(data);
+    console.log("value: ",value);
 
     if (error) {
       return new NextResponse(JSON.stringify(error.details[0]), {
@@ -81,9 +84,7 @@ export async function POST(request: Request) {
     const watchedTimeExist = await db
       .select()
       .from(watched_time)
-      .where(
-          eq(watched_time.playlist_id, value.playlist_id),
-      );
+      .where(eq(watched_time.playlist_id, value.playlist_id));
 
     if (watchedTimeExist.length > 0) {
       let json_response = {
@@ -96,7 +97,18 @@ export async function POST(request: Request) {
       });
     }
 
-    const new_watched_time: NewWatchedTime = {
+    if (value.watch_video_no > 1) {
+      let json_response = {
+        status: "failed",
+        message: "WatchTime record should always start with video number 1.",
+      };
+      return new NextResponse(JSON.stringify(json_response), {
+        status: 406,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const new_watched_time = {
       ...value,
     };
 

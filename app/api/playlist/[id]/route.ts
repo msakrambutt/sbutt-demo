@@ -2,7 +2,8 @@ import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { serialize } from "cookie";
-import {db, playlist, watched_time } from "@/lib/drizzle";
+import { playlist, watched_time } from "@/lib/drizzle";
+import { db } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { playListCreationSchema } from "../validations";
@@ -14,7 +15,7 @@ export const GET = async (
 ) => {
   try {
     const id = params.id;
-
+    console.log("playlist id: ",id);
     let playlists: any;
 
     playlists = await db
