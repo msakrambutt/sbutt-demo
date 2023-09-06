@@ -16,10 +16,8 @@ if (typeof process.env.SECRET_KEY === "string") {
 
 const HeroSection = async() => {
   const token = await User_Token();
-  
-
-
-  console.log("herosection",token);
+  //
+   console.log("herosection",token);
   let userName:string="";
   if(token){
     try{
@@ -32,26 +30,8 @@ const HeroSection = async() => {
       const decodeToken=jwt.verify(token,JWT_SECRET_KEY) as JwtPayload;
       console.log("decode Token "+decodeToken.user.id);
       const userId=decodeToken.user.id;
-     
-
-  //     console.log("token verify",verified);
-  //     if(verified){
-  //     const userId =
-  //     typeof verified.payload === 'object' &&
-  //     verified.payload !== null &&
-  //     'user' in verified.payload &&
-  //     typeof verified.payload.user === 'object' &&
-  //     verified.payload.user !== null &&
-  //     'id' in verified.payload.user
-  //       ? verified.payload.user.id
-  //       : null;
-  //       if (userId === null) {
-  //         console.log('Invalid JWT payload or missing user ID');
-  //       } else {
-  //         // console.log('User ID:', userId);
-  //       }
         console.log("userId ",userId);
-        const response = await fetch(`${process.env.BASE_URL}/api/getData?userId=${userId}`, {
+        const response = await fetch(`/api/getData?userId=${userId}`, {
         method: "GET",
         cache:'no-store',
         headers:{
@@ -66,14 +46,16 @@ const HeroSection = async() => {
     }catch(error){
       console.log("Token has expired",error);
     }
+    
+
   }
   return (
     <section className="text-gray-600 body-font">
       <h2 className='text-left font-bold text-sm'>User Token Get From Cookie:</h2>
       <p className='text-sm'>{token ? token : "Token Not exist"}</p><br/>
       <p className='text-lg font-bold text-green-500'>{userName && userName? "User "+userName+" has login!" : "No user Login!"}</p><br/>
-      {/* Cookie deletion route */}
-      {/* <div><Link href={"/signout"}>Signout User! on Client side</Link></div>  */}
+      <div><Link href={"/FetchCertificate"}>Get Certificate Data!.</Link></div>
+      <div><Link href={"/FetchCertificateByUserId"}>Get Certificate Data by user ID!.</Link></div>
       <div><Link href={"/logoutUser"}>Signout User!.</Link></div> 
   <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
@@ -98,3 +80,20 @@ const HeroSection = async() => {
 }
 
 export default HeroSection
+
+//     console.log("token verify",verified);
+  //     if(verified){
+  //     const userId =
+  //     typeof verified.payload === 'object' &&
+  //     verified.payload !== null &&
+  //     'user' in verified.payload &&
+  //     typeof verified.payload.user === 'object' &&
+  //     verified.payload.user !== null &&
+  //     'id' in verified.payload.user
+  //       ? verified.payload.user.id
+  //       : null;
+  //       if (userId === null) {
+  //         console.log('Invalid JWT payload or missing user ID');
+  //       } else {
+  //         // console.log('User ID:', userId);
+  //       }

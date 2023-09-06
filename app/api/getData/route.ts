@@ -12,9 +12,8 @@ export const GET = async (request:NextRequest) => {
 try{
   if (process.env.SECRET_KEY) {
   const req = request.nextUrl;
-  console.log("userId "+req);
-  const user_id= req.searchParams.get("userId");
-  console.log("user_id" +typeof user_id);
+  const user_id= req.searchParams.get("userId") as string;
+  // console.log("user_id" +typeof user_id);
     if (!user_id) {
         return new NextResponse(
           JSON.stringify({

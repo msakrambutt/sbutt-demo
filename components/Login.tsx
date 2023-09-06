@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 const Login = () => {
   const handleGenerateToken = async () => {
     const payload = {
-      email: "msakrambutt@gmail.com",
+      email: "suleman11@gmail.com",
       password:"555"
      
     };
